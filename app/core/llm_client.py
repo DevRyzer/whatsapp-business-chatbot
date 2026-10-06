@@ -3,28 +3,11 @@ from groq import AsyncGroq
 from sqlalchemy.orm import Session
 from app.config import settings
 from app.core.prompts import SYSTEM_PROMPT
+from app.core.tools import TOOLS
 from app.services.properties_service import search_properties
 
 client = AsyncGroq(api_key=settings.GROQ_API_KEY)
 model = "openai/gpt-oss-120b"
-
-TOOLS = [
-    {
-        "type": "function",
-        "function": {
-            "name": "search_properties",
-            "description": "Search for properties based on the user's query.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "zone": {"type": "string", "description": "Zona o barrio, ej: 'Norte'"},
-                    "max_price": {"type": "number", "description": "Precio máximo en euros"},
-                    "habitaciones_min": {"type": ["integer", "null"], "description": "Mínimo de habitaciones. Puede ser null si el usuario no lo especifica."}
-                },
-            },
-        }
-    }
-]
 
 async def generate_response(message: str, db: Session) -> str:
     messages = [

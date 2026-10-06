@@ -8,24 +8,27 @@ import json
 router = APIRouter()
 
 @router.post("/webhook/whatsapp")
-async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
+async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)) -> Response:
 
-    print("LATENEMOS")
-    data = await request.json()
-    # number = data["value"]["messages"][0]["from"]
-    # message = data["value"]["messages"][0]["text"]["body"]
-    
-    print(json.dumps(data, indent=4))
+    form = await request.form()
+    number = form.get("From")
+    message = form.get("Body")
 
-    return Response(status_code=200)
+    response = await message_process(number=number, message=message, db=db)
 
-    #response = await message_process(number=number, message=message, db = db)
-
-    print("RESPONSE: ", response)
     return Response(
         content=response,
         media_type="application/xml"
     )
+
+@router.post("webhook/whatsapp/status")
+async def whatsapp_status(request: Request, db: Session = Depends(get_db)):
+
+    form = await request.form()
+
+    print("FORM STATUS", dict(form))
+
+    return
 
 @router.get("/webhook/whatsapp")
 async def verify_webhook(request: Request):
