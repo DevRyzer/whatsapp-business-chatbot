@@ -1,0 +1,53 @@
+Proyecto 1: Bot de WhatsApp para consultas de inmuebles — guía paso a paso
+Paso 1: Elegir cómo conectar con WhatsApp
+
+Tienes dos opciones realistas para empezar (no uses la API oficial de Meta directamente al inicio, es más burocrática):
+
+Twilio (WhatsApp Sandbox): la más recomendada para aprender y prototipar. Gratis para desarrollo, documentación excelente, te da un número de sandbox en minutos.
+WhatsApp Business API vía proveedor (ej. 360dialog, Wati): más orientado a producción real con clientes, pero tiene coste y proceso de verificación. Déjalo para cuando ya tengas un cliente real.
+
+Para este proyecto de portfolio, usa Twilio Sandbox.
+
+Paso 2: Configurar Twilio
+Crea cuenta gratuita en Twilio.
+Activa el WhatsApp Sandbox (te dan un número de prueba y un código para "unirte" desde tu WhatsApp personal, enviando un mensaje tipo "join palabra-clave").
+Consigue tu Account SID y Auth Token desde el panel — los necesitarás para autenticar las llamadas a la API.
+Paso 3: Montar el backend con FastAPI
+
+Estructura mínima:
+
+Un endpoint POST /webhook/whatsapp que Twilio llamará cada vez que alguien te escriba un mensaje.
+Twilio te envía el mensaje entrante como datos de formulario (From, Body, etc.) — necesitas parsear eso.
+Tu endpoint responde con TwiML (XML) o usando el cliente de Twilio para enviar la respuesta de vuelta.
+
+Para que Twilio pueda llamar a tu endpoint necesitas una URL pública. En desarrollo, usa ngrok para exponer tu localhost temporalmente.
+
+Paso 4: Crear la base de datos de inmuebles (mock)
+
+Una tabla simple en PostgreSQL, algo así (no hace falta que sea perfecta, es para la demo):
+
+id, direccion, zona, precio, metros_cuadrados, habitaciones, disponible (booleano), descripcion.
+
+Rellénala con 10-15 inmuebles de ejemplo variados (distintas zonas, precios, tipos) para que las respuestas del bot tengan variedad real que mostrar en la demo.
+
+Paso 5: Conectar el mensaje entrante con la IA
+
+Cuando llega un mensaje del usuario (ej. "¿tenéis algo en zona norte por menos de 200k?"):
+
+Envías ese texto + un resumen del catálogo (o usa function calling para que la IA decida qué consulta hacer a tu base de datos) a la API de Claude/OpenAI.
+La forma más robusta de hacerlo bien (y es justo lo que quieres aprender) es usando function calling: le das a la IA una "herramienta" tipo buscar_inmuebles(zona, precio_max, habitaciones) y dejas que ella decida cuándo y cómo llamarla según lo que pregunte el usuario.
+Ejecutas esa función contra tu base de datos real, devuelves el resultado a la IA, y ella genera la respuesta final en lenguaje natural.
+Paso 6: Enviar la respuesta de vuelta por WhatsApp
+
+Usa el cliente de Twilio para responder al número que te escribió, con el texto generado por la IA.
+
+Paso 7: Probarlo y pulir
+Prueba con preguntas variadas: ambiguas, con errores de escritura, preguntas fuera de contexto (para ver cómo reacciona el bot).
+Añade un mensaje de bienvenida/system prompt claro: "Eres el asistente de Inmobiliaria [nombre]. Ayudas a los clientes a encontrar inmuebles según sus preferencias. Sé breve y cercano."
+Paso 8: Grabar la demo
+
+Graba la conversación real desde tu WhatsApp (pantalla del móvil o captura de pantalla en vídeo) preguntando 2-3 cosas distintas para mostrar variedad de respuestas.
+
+Stack final de este proyecto: FastAPI + PostgreSQL + Twilio + API de Claude/OpenAI (function calling) + ngrok para desarrollo.
+
+¿Quieres que te ayude ahora con el código del endpoint de FastAPI y la definición del function calling, o prefieres primero tener tú la cuenta de Twilio configurada y las tablas creadas?
