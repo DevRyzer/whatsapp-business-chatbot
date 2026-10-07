@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, Depends, Response
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.services.whatsapp_service import message_process
+from app.services.db_service import insert_conversation
 from app.config import settings
 import json
 
@@ -13,6 +14,11 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)) -> R
     form = await request.form()
     number = form.get("From")
     message = form.get("Body")
+
+    print("FORM NORMAL", form)
+    print("FORM DICT", form.dict())
+    return
+    insert_conversation(db, form.dict())
 
     response = await message_process(number=number, message=message, db=db)
 

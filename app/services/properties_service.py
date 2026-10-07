@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.property import Property
-from app.services.data_parser import parse_property_data
+from app.services.data_service import parse_property_data
 
 def search_properties(
         db: Session, 

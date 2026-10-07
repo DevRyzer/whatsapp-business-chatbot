@@ -12,7 +12,7 @@ from app.schemas.whatsapp_api_data import WhatsAppWebHook
         message_type=message.type
     )"""
 
-def parse_message_data(data, ) -> list[dict]:
+def parse_message_data(data) -> list[dict]:
     return [{
         "role": message.role,
         "content": message.content
