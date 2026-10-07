@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     PHONE_NUMBER_ID: str
     WHATS_BUSINESS_ACCOUNT_ID: str
 
+    AI_MODEL: str
+
     model_config = SettingsConfigDict(env_file=".env")
 
 settings = Settings()

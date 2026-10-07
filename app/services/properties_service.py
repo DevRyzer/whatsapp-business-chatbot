@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models.inmueble import Inmueble
+from app.models.property import Property
+from app.services.data_parser import parse_property_data
 
 def search_properties(
         db: Session, 
@@ -7,20 +8,14 @@ def search_properties(
         max_price: float | None = None,
         habitaciones_min: int | None = None
     ):
-    query = db.query(Inmueble).filter(Inmueble.disponible == True)
+    data = db.query(Property).filter(Property.disponible == True)
 
     if zone is not None:
-        query = query.filter(Inmueble.zona.ilike(f"%{zone}%"))
+        data = data.filter(Property.zona.ilike(f"%{zone}%"))
     if max_price is not None:
-        query = query.filter(Inmueble.precio <= max_price)
+        data = data.filter(Property.precio <= max_price)
     if habitaciones_min is not None:
-        query = query.filter(Inmueble.habitaciones >= habitaciones_min)
+        data = data.filter(Property.habitaciones >= habitaciones_min)
 
-    return [
-        {
-            "direccion": i.direccion, "zona": i.zona, "precio": i.precio,
-            "metros": i.metros_cuadrados, "habitaciones": i.habitaciones,
-            "descripcion": i.descripcion,
-        }
-        for i in query.limit(5).all()
-    ]
+    return parse_property_data(data)
+

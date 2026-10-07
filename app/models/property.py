@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean
 from app.db.session import Base
 
-class Inmueble(Base):
+class Property(Base):
     __tablename__ = "inmuebles"
 
     id = Column(Integer, primary_key=True)

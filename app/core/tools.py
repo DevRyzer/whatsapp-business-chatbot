@@ -25,6 +25,11 @@ TOOLS = [
                                             "Use null if the user did not specify a it."
                             }
                     },
+                "required": [
+                    "zone",
+                    "max_price",
+                    "habitaciones_min"
+                ]
                 },
             }
     }

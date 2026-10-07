@@ -1,5 +1,5 @@
 from app.db.session import SessionLocal, Base, engine
-from app.models.inmueble import Inmueble
+from app.models.property import Inmueble
 
 Base.metadata.create_all(bind=engine)
 
